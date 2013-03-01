@@ -1,10 +1,10 @@
 $(document).ready(function(){   
-
+var r = 100;
 $("#box").draggable({
     containment: 'parent',
     cursor:"move",
     drag:function(event, ui){
-    	$('#box').css( "background-position", "-"+ui.position.left+"px -"+ui.position.top+"px")
+    	moveBackground (ui)
 	}
 });
 $("#box").resizable({ 
@@ -13,9 +13,18 @@ $("#box").resizable({
 	containment: 'parent',
 	handles: "all",
 	resize:function(event, ui){
-    	$('#box').css( "background-position", "-"+ui.position.left+"px -"+ui.position.top+"px")
+		r = ui.size.width/2;
+    	moveBackground (ui)
 	}
 });
 
+function moveBackground (ui) {
+	    var x = ui.position.left;
+    	var y = ui.position.top;
+
+    	$('#box').css( "background-position", "-"+x+"px -"+y+"px");
+
+    	$('#result').text('x: '+x+' y: '+y+'\n R: '+r);
+}
 
 });
