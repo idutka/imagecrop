@@ -20,13 +20,18 @@ $(document).ready(function(){
         box: null,
 
         _create: function() {
+
             var _this = this;
-            this.element.load(function() {
+            // var s = this.element.attr("src");
+            // this.element.attr("src",s+ "?" + new Date().getTime());
+            
+            // this.element.load(function() {
                 _this._createfon();
                 _this._createbox();
         	    _this._adddrag();
         	    _this._addresize();
-            });
+            // });
+
         },
 
         _createfon: function() {
@@ -37,12 +42,13 @@ $(document).ready(function(){
 
             this.fon = $('<div>', {
                 id      : this.options.idfon,
-                width   : w,
-                height  : h
+                width   : "100%",   //w
+                height  : "100%"    //h
             });
 
             this.fon.css( "position", 'absolute');
             this.fon.css( "top", '0px');
+            this.fon.css( "left", '0px');
 
             this.fon.css( "background-image", 'url(' + this.options.fonurl + ')');
 
@@ -124,11 +130,11 @@ $(document).ready(function(){
     });
 })( jQuery );
 
-var c = $('#content').myWidget({
+
+$('#content').myWidget({
     idfon        : "shadowfon",
     idbox        : "circle",
     borderradius : "50%"
 });
-
 
 });
