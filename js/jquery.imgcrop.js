@@ -1,24 +1,80 @@
 $(document).ready(function(){   
 
 ( function( $ ) {
-    // The jQuery.aj namespace will automatically be created if it doesn't exist
+
     $.widget( "my.myWidget", {
-        // These options will be used as defaults
-        options: { 
-        	handles : "all" 
+
+        options: {  
+        	handles         : "all",
+            fonurl          : "img/bg.png",
+            idfon           : "fon",
+            idbox           : "box",
+            defaultradius   : 100,
+            minradius       : 20,
+            borderradius    : "50%",
+            defaultstyle    : true
+
     	},
 
+        fon: null,
+        box: null,
+
         _create: function() {
-
-        	this._adddrag();
-        	this._addresize();
-
+            var _this = this;
+            this.element.load(function() {
+                _this._createfon();
+                _this._createbox();
+        	    _this._adddrag();
+        	    _this._addresize();
+            });
         },
+
+        _createfon: function() {
+            var h,w;
+            
+            h = this.element.css('height');
+            w = this.element.css('width');
+
+            this.fon = $('<div>', {
+                id      : this.options.idfon,
+                width   : w,
+                height  : h
+            });
+
+            this.fon.css( "position", 'absolute');
+            this.fon.css( "top", '0px');
+
+            this.fon.css( "background-image", 'url(' + this.options.fonurl + ')');
+
+            this.element.after(this.fon);
+        }, 
+
+        _createbox: function() {
+            var d = this.options.defaultradius*2;
+            var img = this.element.attr('src');
+
+            this.box = $('<div>', {
+                id: this.options.idbox,
+                width: d + "px",
+                height: d + "px"
+            });
+            
+            if(this.options.defaultstyle){
+                this.box.css( "box-shadow", "0 0 20px #000000 inset");
+            }
+
+            this.box.css( "border-radius", this.options.borderradius);
+            this.box.css( "background-image", 'url(' + img + ')');
+            this.box.css( "background-repeat", "no-repeat");
+            this.box.css( "cursor", "move");
+        
+            this.fon.append(this.box);
+        }, 
 
         
         _adddrag: function() {
         	var _this = this;
-        	this.element.draggable({
+        	this.box.draggable({
     			containment: 'parent',
     			cursor:"move",
     			drag:function(event, ui){
@@ -29,43 +85,50 @@ $(document).ready(function(){
 
         _addresize:function() {
         	var _this = this;
-        	this.element.resizable({ 
+        	this.box.resizable({ 
 				aspectRatio: true ,
-				minHeight: 50,
+				minHeight: this.options.minradius*2,
 				containment: 'parent',
 				handles: "all",
 				resize:function(event, ui){
-					r = ui.size.width/2;
+					// r = ui.size.width/2;
     				_this._moveBG (ui)
 				}
 			})
+        },
+
+        addboxcss:function() {
+            console.log('sdfs');
         },
 
         _moveBG:function(ui) {
 	    	var x = ui.position.left;
     		var y = ui.position.top;
 
-    		this.element.css( "background-position", "-"+x+"px -"+y+"px");
+    		this.box.css( "background-position", "-"+x+"px -"+y+"px");
 
     		//$('#result').text('x: '+x+' y: '+y+'\n R: '+r);
 		},
 
         _setOption: function( key, value ) {
-            // Use the _setOption method to respond to changes to options
             switch( key ) {
                 case "length":
                     break;
             }
-            // and call the parent function too!
             return this._superApply( arguments );
         },
+
         _destroy: function() {
-            // Use the destroy method to reverse everything your plugin has applied
             return this._super();
         }
     });
 })( jQuery );
 
-$('#box').myWidget();
+var c = $('#content').myWidget({
+    idfon        : "shadowfon",
+    idbox        : "circle",
+    borderradius : "50%"
+});
+
 
 });
