@@ -46,18 +46,13 @@ table {
 
 #wrapper {
 	margin: 0 auto;
-	width: 600px;
+	width: 800px;
 	margin-top: 30px;
 }
 
 #conteyner {
 	position: relative;
 }
-
-#content {
-	position: relative;
-}
-
 
 .ui-resizable-handle.ui-resizable-ne, .ui-resizable-handle.ui-resizable-se, .ui-resizable-handle.ui-resizable-sw, .ui-resizable-handle.ui-resizable-nw {
 	background-image: url('../img/angle.png');

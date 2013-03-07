@@ -6,8 +6,8 @@ $(document).ready(function(){
 
         options: {  
         	handles         : "all",
-            fonurl          : "img/bg.png",
-            idfon           : "fon",
+            maskurl          : "img/bg.png",
+            idmask           : "mask",
             idbox           : "box",
             defaultradius   : 100,
             minradius       : 20,
@@ -16,43 +16,45 @@ $(document).ready(function(){
 
     	},
 
-        fon: null,
+        mask: null,
         box: null,
 
         _create: function() {
 
             var _this = this;
-            // var s = this.element.attr("src");
-            // this.element.attr("src",s+ "?" + new Date().getTime());
-            
-            // this.element.load(function() {
-                _this._createfon();
+           
+            this.element.one('load', function() {
+
+                _this._createmask();
                 _this._createbox();
-        	    _this._adddrag();
-        	    _this._addresize();
-            // });
+                _this._adddrag();
+                _this._addresize();
+                _this._showSize(0,0,_this.options.defaultradius);
+
+            }).each(function() {
+                if(this.complete) $(this).load();
+            });
 
         },
 
-        _createfon: function() {
-            var h,w;
-            
-            h = this.element.css('height');
-            w = this.element.css('width');
+        _createmask: function() {
+                      
+            var h = this.element.css('height');
+            var w = this.element.css('width');
 
-            this.fon = $('<div>', {
-                id      : this.options.idfon,
-                width   : "100%",   //w
-                height  : "100%"    //h
+            this.mask = $('<div>', {
+                id      : this.options.idmask,
+                width   : w,
+                height  : h
             });
 
-            this.fon.css( "position", 'absolute');
-            this.fon.css( "top", '0px');
-            this.fon.css( "left", '0px');
+            this.mask.css( "position", 'absolute');
+            this.mask.css( "top", '0px');
+            this.mask.css( "left", '0px');
 
-            this.fon.css( "background-image", 'url(' + this.options.fonurl + ')');
+            this.mask.css( "background-image", 'url(' + this.options.maskurl + ')');
 
-            this.element.after(this.fon);
+            this.element.after(this.mask);
         }, 
 
         _createbox: function() {
@@ -74,7 +76,7 @@ $(document).ready(function(){
             this.box.css( "background-repeat", "no-repeat");
             this.box.css( "cursor", "move");
         
-            this.fon.append(this.box);
+            this.mask.append(this.box);
         }, 
 
         
@@ -97,24 +99,34 @@ $(document).ready(function(){
 				containment: 'parent',
 				handles: "all",
 				resize:function(event, ui){
-					// r = ui.size.width/2;
-    				_this._moveBG (ui)
+    				_this._moveBG (ui);
 				}
 			})
-        },
-
-        addboxcss:function() {
-            console.log('sdfs');
         },
 
         _moveBG:function(ui) {
 	    	var x = ui.position.left;
     		var y = ui.position.top;
 
+            if(ui.size != undefined){
+                var r = ui.size.width/2;
+            }else{
+                var r = false;
+            }
+            
     		this.box.css( "background-position", "-"+x+"px -"+y+"px");
 
-    		//$('#result').text('x: '+x+' y: '+y+'\n R: '+r);
+            this._showSize(x,y,r);
 		},
+
+        _showSize:function(x,y,r) {
+            var i = $('#size :input');
+
+            i[0].value = x;
+            i[1].value = y;
+            if(r){ i[2].value = r; }
+
+        },
 
         _setOption: function( key, value ) {
             switch( key ) {
@@ -125,16 +137,22 @@ $(document).ready(function(){
         },
 
         _destroy: function() {
+            alert('Еемент видалено');
+            this.mask.remove();
             return this._super();
         }
     });
 })( jQuery );
 
 
-$('#content').myWidget({
-    idfon        : "shadowfon",
+var w = $('#content').myWidget({
+    idmask       : "shadowmask",
     idbox        : "circle",
     borderradius : "50%"
 });
+
+$('#destroy').click(function(){
+    w.remove();
+})
 
 });
